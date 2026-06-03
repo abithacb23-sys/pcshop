@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit User | Overclock PC Shop{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="glass-panel p-4">
+                <h2>Edit User</h2>
+                <p class="text-muted">Update the account and profile information.</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">First name</label>
+                            <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control bg-dark text-white border-secondary">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last name</label>
+                            <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control bg-dark text-white border-secondary">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" value="{{ user.email }}" class="form-control bg-dark text-white border-secondary">
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center">
+                            <div class="form-check me-3">
+                                <input class="form-check-input" type="checkbox" name="is_active" id="is_active" {% if user.is_active %}checked{% endif %}>
+                                <label class="form-check-label" for="is_active">Active</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="is_staff" id="is_staff" {% if user.is_staff %}checked{% endif %}>
+                                <label class="form-check-label" for="is_staff">Staff</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="phone" value="{{ user_profile.phone }}" class="form-control bg-dark text-white border-secondary">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Shipping Address</label>
+                            <input type="text" name="shipping_address" value="{{ user_profile.shipping_address }}" class="form-control bg-dark text-white border-secondary">
+                        </div>
+                    </div>
+                    <div class="mt-4 d-flex justify-content-between">
+                        <a href="{% url 'user_detail' user.id %}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-cyber">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

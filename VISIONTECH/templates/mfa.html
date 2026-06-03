@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Verify MFA | Overclock PC Shop{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <div class="card border-0 shadow-lg bg-dark text-white">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h1 class="h3 mb-2">Multi-Factor Authentication</h1>
+                        <p class="text-muted">A secure code has been generated for <strong>{{ username }}</strong>. Enter it below to complete login.</p>
+                    </div>
+
+                    <div class="alert alert-secondary text-white border-secondary" role="alert">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <strong>Verification code</strong>
+                                <p class="mb-0">For demo purposes, use <span class="fw-bold">{{ mfa_code }}</span>.</p>
+                            </div>
+                            <i class="bi bi-shield-lock fs-2"></i>
+                        </div>
+                    </div>
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="code" class="form-label">6-digit code</label>
+                            <input type="text" class="form-control bg-secondary text-white border-secondary" id="code" name="code" placeholder="Enter your MFA code" maxlength="6" required>
+                        </div>
+                        <button type="submit" class="btn btn-cyber w-100 py-3">Verify and enter dashboard</button>
+                    </form>
+
+                    <div class="text-center mt-4 text-muted">
+                        Wrong operator? <a href="{% url 'login_view' %}" class="text-info text-decoration-none">Return to login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

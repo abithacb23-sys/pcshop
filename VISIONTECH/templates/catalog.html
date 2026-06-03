@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Silicon Marketplace | Overclock PC Shop{% endblock %}
+
+{% block content %}
+<section class="container py-5 mt-4">
+    <!-- Header Title -->
+    <div class="row mb-5">
+        <div class="col text-center text-md-start">
+            <h1 class="text-uppercase">Silicon Marketplace</h1>
+            <p class="text-muted mb-0">Browse and filter high-end PC parts, custom components, and hardware configurations.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Sidebar Filters -->
+        <div class="col-lg-3">
+            <div class="glass-panel p-4 mb-4">
+                <h5 class="text-uppercase mb-4" style="color: var(--neon-blue); font-size:16px;">
+                    <i class="bi bi-funnel-fill me-2"></i>Filters
+                </h5>
+
+                <!-- Search -->
+                <form action="{% url 'catalog' %}" method="GET" class="mb-4">
+                    <label class="form-label text-muted small text-uppercase">Keyword Search</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control bg-dark text-white border-secondary" placeholder="Search..." name="q" value="{{ query }}">
+                        {% if active_category %}
+                            <input type="hidden" name="category" value="{{ active_category.slug }}">
+                        {% endif %}
+                        <button class="btn btn-outline-info" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Categories List -->
+                <div class="mb-4">
+                    <label class="form-label text-muted small text-uppercase mb-3">Categories</label>
+                    <div class="d-flex flex-column gap-2">
+                        <a href="{% url 'catalog' %}{% if query %}?q={{ query }}{% endif %}" class="btn btn-sm text-start py-2 px-3 {% if not active_category %}btn-info text-black{% else %}btn-outline-secondary text-white border-secondary{% endif %}" style="font-size:13px; font-weight:500;">
+                            All Categories
+                        </a>
+                        {% for cat in categories %}
+                        <a href="{% url 'catalog' %}?category={{ cat.slug }}{% if query %}&q={{ query }}{% endif %}" class="btn btn-sm text-start py-2 px-3 {% if active_category.slug == cat.slug %}btn-info text-black{% else %}btn-outline-secondary text-white border-secondary{% endif %}" style="font-size:13px; font-weight:500;">
+                            <i class="bi {{ cat.icon }} me-2"></i>{{ cat.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Brands List -->
+                <div class="mb-4">
+                    <label class="form-label text-muted small text-uppercase mb-3">Brands</label>
+                    <div class="d-flex flex-column gap-2">
+                        <a href="{% url 'brand_list' %}" class="btn btn-sm text-start py-2 px-3 {% if not active_brand %}btn-info text-black{% else %}btn-outline-secondary text-white border-secondary{% endif %}" style="font-size:13px; font-weight:500;">
+                            View All Brands
+                        </a>
+                        {% for b in brands %}
+                        <a href="{% url 'catalog' %}?brand={{ b.slug|urlencode }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if active_category %}&category={{ active_category.slug|urlencode }}{% endif %}" class="btn btn-sm text-start py-2 px-3 {% if active_brand and active_brand.slug == b.slug %}btn-info text-black{% else %}btn-outline-secondary text-white border-secondary{% endif %}" style="font-size:13px; font-weight:500;">
+                            {{ b.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Sort By -->
+                <div>
+                    <label class="form-label text-muted small text-uppercase mb-2">Sort Results</label>
+                    <select class="form-select bg-dark text-white border-secondary" onchange="location = this.value;" style="cursor: pointer;">
+                        <option value="{% url 'catalog' %}?sort=name{% if query %}&q={{ query }}{% endif %}{% if active_category %}&category={{ active_category.slug }}{% endif %}" {% if sort_by == 'name' %}selected{% endif %}>Name (A-Z)</option>
+                        <option value="{% url 'catalog' %}?sort=price_asc{% if query %}&q={{ query }}{% endif %}{% if active_category %}&category={{ active_category.slug }}{% endif %}" {% if sort_by == 'price_asc' %}selected{% endif %}>Price (Low to High)</option>
+                        <option value="{% url 'catalog' %}?sort=price_desc{% if query %}&q={{ query }}{% endif %}{% if active_category %}&category={{ active_category.slug }}{% endif %}" {% if sort_by == 'price_desc' %}selected{% endif %}>Price (High to Low)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="col-lg-9">
+            <!-- Summary Info -->
+            <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+                <span class="text-muted small">
+                    Showing <strong class="text-white">{{ products|length }}</strong> products
+                    {% if active_category %}in Category: <strong class="text-info">{{ active_category.name }}</strong>{% endif %}
+                    {% if query %}for query: <strong class="text-info">"{{ query }}"</strong>{% endif %}
+                </span>
+                
+                {% if active_category or query %}
+                <a href="{% url 'catalog' %}" class="btn btn-sm btn-outline-danger" style="font-size:11px; font-family: var(--font-heading);">
+                    Clear Filters
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Brands Bar -->
+            <div class="mb-4">
+                <div class="brand-bar glass-panel p-3 d-flex flex-wrap gap-2 align-items-center">
+                    <a href="{% url 'brand_list' %}" class="brand-pill btn btn-sm btn-outline-secondary text-white border-secondary">
+                        View All Brands
+                    </a>
+                    {% for b in brands %}
+                        <a href="{% url 'catalog' %}?brand={{ b.slug|urlencode }}{% if query %}&q={{ query|urlencode }}{% endif %}{% if active_category %}&category={{ active_category.slug|urlencode }}{% endif %}" class="brand-pill btn btn-sm {% if active_brand and active_brand.slug == b.slug %}btn-info text-black{% else %}btn-outline-secondary text-white border-secondary{% endif %}">
+                            {{ b.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="row g-4">
+                {% for product in products %}
+                <div class="col-md-6 col-xl-4">
+                    <div class="product-card">
+                        <div class="product-image-container">
+                            <span class="card-badge-neon">{{ product.category.name }}</span>
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                        </div>
+                        
+                        <div class="product-info">
+                            <h4 class="product-title" title="{{ product.name }}">{{ product.name }}</h4>
+                            <p class="text-muted small mb-2" style="font-size:12px;">
+                                <span class="brand-list-item">
+                                    {% if product.brand %}
+                                        Brand: <strong class="text-info ms-1">{{ product.brand.name }}</strong>
+                                    {% else %}
+                                        Brand: <strong class="text-info ms-1">Unknown</strong>
+                                    {% endif %}
+                                </span>
+                            </p>
+                            <p class="text-muted small mb-3" style="font-size: 12px; height: 36px; overflow: hidden;">{{ product.description }}</p>
+                            
+                            <div class="specs-short">
+                                {% if product.socket %}
+                                    <span class="spec-pill">Socket: {{ product.socket }}</span>
+                                {% endif %}
+                                {% if product.ram_type %}
+                                    <span class="spec-pill">{{ product.ram_type }}</span>
+                                {% endif %}
+                                {% if product.form_factor %}
+                                    <span class="spec-pill">{{ product.form_factor }}</span>
+                                {% endif %}
+                                {% if product.wattage %}
+                                    <span class="spec-pill">{{ product.wattage }}W</span>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="price-tag">₹{{ product.price|floatformat:2 }}</div>
+                            
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'product_detail' product.slug %}" class="btn btn-sm btn-cyber-outline flex-grow-1 text-center">Specs</a>
+                                <a href="{% url 'cart_add' product.id %}" class="btn btn-sm btn-cyber flex-grow-1 text-center">Buy</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <div class="glass-panel text-center py-5">
+                        <i class="bi bi-search fs-1 text-muted mb-3 d-block"></i>
+                        <h4 class="text-uppercase text-danger mb-2">No hardware matches your request</h4>
+                        <p class="text-muted">Try adjusting your filters, search keywords, or browse all categories.</p>
+                        <a href="{% url 'catalog' %}" class="btn btn-cyber mt-3">Reset Marketplace</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

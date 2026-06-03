@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}User Detail | Overclock PC Shop{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+        <div>
+            <h2>User Detail</h2>
+            <p class="text-muted mb-0">Review account details, orders, and support tickets.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'user_edit' user.id %}" class="btn btn-cyber btn-sm">Edit User</a>
+            <a href="{% url 'manage_users' %}" class="btn btn-outline-secondary btn-sm">Back to Users</a>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-4">
+            <div class="glass-panel p-4">
+                <h5>Account</h5>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Joined:</strong> {{ user.date_joined|date:"d M Y" }}</p>
+                <p><strong>Staff:</strong> {{ user.is_staff|yesno:"Yes,No" }}</p>
+                <p><strong>Active:</strong> {{ user.is_active|yesno:"Yes,No" }}</p>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="glass-panel p-4">
+                <h5>Profile</h5>
+                <p><strong>Phone:</strong> {{ user_profile.phone|default:"Not provided" }}</p>
+                <p><strong>Shipping Address:</strong> {{ user_profile.shipping_address|default:"Not provided" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="glass-panel p-4">
+                <h5>User Orders</h5>
+                <div class="list-group">
+                    {% for order in user_orders %}
+                    <a href="{% url 'order_detail' order.id %}" class="list-group-item list-group-item-action bg-dark text-white border-secondary">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>#{{ order.id|stringformat:"06d" }} — ₹{{ order.total_price|floatformat:2 }}</span>
+                            <span class="badge bg-info">{{ order.status }}</span>
+                        </div>
+                        <small class="text-muted">{{ order.created_at|date:"d M Y" }}</small>
+                    </a>
+                    {% empty %}
+                    <div class="text-center text-muted p-3">No orders for this user.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="glass-panel p-4">
+                <h5>Support Tickets</h5>
+                <div class="list-group">
+                    {% for ticket in user_tickets %}
+                    <div class="list-group-item bg-dark border-secondary text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>{{ ticket.subject }}</span>
+                            <span class="badge bg-secondary">{{ ticket.ticket_type }}</span>
+                        </div>
+                        <small class="text-muted">{{ ticket.created_at|date:"d M Y" }}</small>
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-muted p-3">No tickets for this user.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

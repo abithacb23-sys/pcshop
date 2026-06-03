@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Overclock PC Shop | Premium Gaming Rigs & Hardware{% endblock %}
+
+{% block content %}
+
+<!-- Futuristic Hero Section -->
+<section class="hero">
+    <div class="hero-glow"></div>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 hero-content">
+                <div class="badge bg-secondary text-uppercase mb-3 px-3 py-2" style="font-family: var(--font-heading); font-size:11px; letter-spacing: 2px; border: 1px solid var(--neon-blue);">
+                    System Initialization Active
+                </div>
+                <h1>
+                    ENGINEER YOUR<br>
+                    <span class="accent-blue">ULTIMATE</span> GAMING RIG
+                </h1>
+                <p>
+                    Uncompromising speed. Liquid-cooled thermals. We source and tune the world's fastest CPUs, GPUs, and custom gaming cabinets. Build your dream setup or choose from our pre-configured battle stations.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'catalog' %}" class="btn btn-cyber">
+                        <i class="bi bi-cart-fill me-2"></i>Shop Silicon
+                    </a>
+                    <a href="{% url 'pc_builder' %}" class="btn btn-cyber-outline">
+                        <i class="bi bi-gear-fill me-2"></i>Configure Rig
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-5 text-center mt-5 mt-lg-0 position-relative">
+                <div class="glass-panel-purple p-2 d-inline-block position-relative" style="border-radius: 20px;">
+                    <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?q=80&w=1974&auto=format&fit=crop" alt="Futuristic Rig" class="img-fluid" style="border-radius: 16px; max-height: 420px; object-fit: cover;">
+                    <!-- Micro-accents -->
+                    <span class="position-absolute translate-middle badge border border-light rounded-circle bg-danger p-2" style="top: 10%; left: 90%; box-shadow: 0 0 10px #ff0055;"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="container py-5">
+    <div class="row mb-5">
+        <div class="col text-center">
+            <h2 class="text-uppercase" style="font-size: 32px;">Featured Categories</h2>
+            <div style="height: 3px; width: 80px; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); margin: 15px auto 0 auto;"></div>
+        </div>
+    </div>
+    
+    <div class="cat-card-grid">
+        {% for cat in categories %}
+        <a href="{% url 'catalog' %}?category={{ cat.slug }}" class="category-card text-decoration-none">
+            <i class="bi {{ cat.icon }}"></i>
+            <h5>{{ cat.name }}</h5>
+        </a>
+        {% empty %}
+        <div class="col-12 text-center text-muted">No categories initialized. Run migrations and seed command.</div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Banner Custom Builder Callout -->
+<section class="container py-5">
+    <div class="glass-panel" style="background: linear-gradient(135deg, rgba(20, 20, 30, 0.8), rgba(11, 11, 15, 0.9)); border-color: var(--neon-blue);">
+        <div class="row align-items-center p-lg-4">
+            <div class="col-lg-8">
+                <h3 class="text-uppercase mb-3" style="color: var(--neon-blue);">Custom Rig Configurator</h3>
+                <p class="text-muted mb-0">
+                    Are you worried about socket layouts, RAM compatibility, and power draws? Our automated diagnostics checker checks parts compatibility in real-time. Estimate wattage usage, compute costs, and order custom builds with single-click checkouts.
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <a href="{% url 'pc_builder' %}" class="btn btn-cyber">
+                    <i class="bi bi-cpu-fill me-2"></i>Start Build Protocol
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trending/Featured Products Section -->
+<section class="container py-5">
+    <div class="row mb-5">
+        <div class="col text-center">
+            <h2 class="text-uppercase" style="font-size: 32px;">Overclock Elite Drops</h2>
+            <div style="height: 3px; width: 80px; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); margin: 15px auto 0 auto;"></div>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        {% for product in featured_products %}
+        <div class="col-lg-4 col-md-6">
+            <div class="product-card">
+                <div class="product-image-container">
+                    <span class="card-badge-neon">Featured</span>
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                </div>
+                
+                <div class="product-info">
+                    <h4 class="product-title" title="{{ product.name }}">{{ product.name }}</h4>
+                    <p class="text-muted small mb-3">{{ product.description|truncatewords:15 }}</p>
+                    
+                    <div class="specs-short">
+                        {% if product.socket %}
+                            <span class="spec-pill">{{ product.socket }}</span>
+                        {% endif %}
+                        {% if product.ram_type %}
+                            <span class="spec-pill">{{ product.ram_type }}</span>
+                        {% endif %}
+                        {% if product.form_factor %}
+                            <span class="spec-pill">{{ product.form_factor }}</span>
+                        {% endif %}
+                        {% if product.wattage %}
+                            <span class="spec-pill">{{ product.wattage }}W</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="price-tag">₹{{ product.price|floatformat:2 }}</div>
+                    
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'product_detail' product.slug %}" class="btn btn-sm btn-cyber-outline flex-grow-1 text-center">Specs</a>
+                        <a href="{% url 'cart_add' product.id %}" class="btn btn-sm btn-cyber flex-grow-1 text-center">Buy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted">No featured hardware loaded. Execute seeding command to populate the marketplace.</div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Cyberpunk Specs Details Highlight -->
+<section class="container py-5">
+    <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+            <div class="glass-panel-purple">
+                <h3 class="text-uppercase mb-4" style="color: var(--neon-purple);">Performance Guarantee</h3>
+                <div class="d-flex align-items-start mb-3">
+                    <div class="fs-2 text-info me-3"><i class="bi bi-shield-check"></i></div>
+                    <div>
+                        <h5>Voltage Testing</h5>
+                        <p class="text-muted small">Every chip is voltage-calibrated to guarantee stable boost clocks under thermal loads.</p>
+                    </div>
+                </div>
+                
+                <div class="d-flex align-items-start mb-3">
+                    <div class="fs-2 text-info me-3"><i class="bi bi-droplet-fill"></i></div>
+                    <div>
+                        <h5>Liquid Loop Testing</h5>
+                        <p class="text-muted small">Pre-configured rigs undergo a 24-hour leak and pressure test to safeguard loops.</p>
+                    </div>
+                </div>
+                
+                <div class="d-flex align-items-start">
+                    <div class="fs-2 text-info me-3"><i class="bi bi-truck"></i></div>
+                    <div>
+                        <h5>Encrypted Fast Shipping</h5>
+                        <p class="text-muted small">Shipped in vacuum-molded secure containers with shock-absorption casing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <h2 class="text-uppercase mb-3">PREMIUM HARDWARE INTEGRATION</h2>
+            <p class="text-muted">
+                Our inventory tracks international drops for RTX GPUs, Zen architectures, and Corsair RGB links. Check out details on individual component listings, customize specifications (such as ordering overclock tuning or specific RGB color settings), and buy with complete peace of mind.
+            </p>
+            <a href="{% url 'catalog' %}" class="btn btn-cyber mt-3">Browse Full Catalog</a>
+        </div>
+    </div>
+</section>
+
+<!-- Feedback Form Section -->
+<section class="container py-5">
+    <div class="glass-panel p-4">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h2 class="text-uppercase mb-3">Your Feedback Matters</h2>
+                <p class="text-muted mb-0">Tell us what you think about the website, products, and service. Your feedback helps us improve every day.</p>
+            </div>
+            <div class="col-lg-6">
+                {% if request.user.is_authenticated %}
+                <form method="post" action="{% url 'feedback' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="feedback-subject" class="form-label text-white">Subject</label>
+                        <input type="text" id="feedback-subject" name="subject" class="form-control bg-dark text-white border-secondary" placeholder="Feedback subject" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="feedback-message" class="form-label text-white">Message</label>
+                        <textarea id="feedback-message" name="message" rows="5" class="form-control bg-dark text-white border-secondary" placeholder="Write your feedback here..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-cyber">Send Feedback</button>
+                </form>
+                {% else %}
+                <div class="bg-dark p-4 rounded-3 border border-secondary">
+                    <p class="text-white mb-3">Please log in to submit feedback.</p>
+                    <a href="{% url 'login_view' %}" class="btn btn-cyber btn-sm">Login to Send Feedback</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

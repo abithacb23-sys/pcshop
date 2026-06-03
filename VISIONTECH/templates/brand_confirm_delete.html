@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Confirm Delete | Admin{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="glass-panel p-4 text-center">
+        <h4>Delete Brand</h4>
+        <p>Are you sure you want to delete <strong>{{ brand.name }}</strong>? This action cannot be undone.</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, delete</button>
+            <a href="{% url 'admin_panel' %}" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </form>
+    </div>
+</section>
+{% endblock %}

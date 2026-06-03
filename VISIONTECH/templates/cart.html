@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shopping Cart | Overclock PC Shop{% endblock %}
+
+{% block content %}
+<section class="container py-5 mt-4">
+    <!-- Header -->
+    <div class="row mb-5">
+        <div class="col text-center text-md-start">
+            <h1 class="text-uppercase">Shopping Cart</h1>
+            <p class="text-muted mb-0">Manage core components and check configurations before committing orders.</p>
+        </div>
+    </div>
+
+    {% if cart_items %}
+    <div class="row g-4">
+        <!-- Cart Items List -->
+        <div class="col-lg-8">
+            {% for item in cart_items %}
+            <div class="cart-item-card">
+                <!-- Info block -->
+                <div class="cart-item-info">
+                    <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" class="cart-item-img">
+                    <div class="cart-item-meta">
+                        <h5 class="text-white text-uppercase m-0">{{ item.product.name }}</h5>
+                        
+                        <!-- Custom settings summary -->
+                        <div class="mt-2" style="font-size: 11px;">
+                            {% if item.overclock %}
+                            <span class="badge bg-danger border border-danger-subtle me-1">Extreme Overclocked (+₹4,999)</span>
+                            {% endif %}
+                            <span class="badge bg-dark border border-secondary text-info">RGB Theme: {{ item.rgb_color }}</span>
+                        </div>
+                        
+                        <div class="cart-item-price mt-2">₹{{ item.product.price|floatformat:2 }}</div>
+                    </div>
+                </div>
+
+                <!-- Action controls -->
+                <div class="d-flex align-items-center gap-4">
+                    <!-- Qty Picker -->
+                    <div class="quantity-control" data-product-id="{{ item.product.id }}">
+                        <button class="quantity-btn" data-action="minus" aria-label="Decrease quantity">-</button>
+                        <input type="text" class="quantity-value" value="{{ item.quantity }}" readonly>
+                        <button class="quantity-btn" data-action="plus" aria-label="Increase quantity">+</button>
+                    </div>
+
+                    <!-- Item Total Cost -->
+                    <div class="text-end" style="min-width: 120px;">
+                        <span class="text-white fw-bold d-block" style="font-family: var(--font-heading); font-size:16px;">
+                            ₹{{ item.total|floatformat:2 }}
+                        </span>
+                    </div>
+
+                    <!-- Remove Item -->
+                    <a href="{% url 'cart_remove' item.product.id %}" class="btn btn-sm btn-outline-danger border-danger-subtle" title="Remove component">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Summary Cost Box -->
+        <div class="col-lg-4">
+            <div class="glass-panel p-4">
+                <h5 class="text-uppercase mb-4 text-center" style="color: var(--neon-blue); font-size:16px;">
+                    <i class="bi bi-receipt me-2"></i>Order Summary
+                </h5>
+
+                <div class="mb-4">
+                    <div class="summary-stat-row">
+                        <span class="summary-stat-label">Items Subtotal:</span>
+                        <span class="summary-stat-value text-white">₹{{ subtotal|floatformat:2 }}</span>
+                    </div>
+                    <div class="summary-stat-row">
+                        <span class="summary-stat-label">GST / Tax (18%):</span>
+                        <span class="summary-stat-value text-white">₹{{ tax|floatformat:2 }}</span>
+                    </div>
+                    <div class="summary-stat-row border-top border-secondary pt-3 mt-2">
+                        <span class="summary-stat-label font-bold text-white fs-6">GRAND TOTAL:</span>
+                        <span class="summary-stat-value text-info fs-5" style="font-family: var(--font-heading); font-weight:700;">
+                            ₹{{ grand_total|floatformat:2 }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column gap-2 mt-3">
+                    <a href="{% url 'checkout' %}" class="btn btn-cyber py-3 text-center">
+                        <i class="bi bi-shield-lock-fill me-2"></i>SECURE CHECKOUT
+                    </a>
+                    <a href="{% url 'catalog' %}" class="btn btn-cyber-outline py-2 text-center text-muted border-secondary">
+                        CONTINUE SHOPPING
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Empty Cart Layout -->
+    <div class="row">
+        <div class="col-12 text-center py-5">
+            <div class="glass-panel py-5" style="max-width: 600px; margin: 0 auto;">
+                <i class="bi bi-cart-x fs-1 text-muted mb-3 d-block"></i>
+                <h3 class="text-uppercase text-danger mb-3">Cart is empty</h3>
+                <p class="text-muted mb-4">No silicon modules or gaming components are currently staged for configuration.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'catalog' %}" class="btn btn-cyber">Shop Marketplace</a>
+                    <a href="{% url 'pc_builder' %}" class="btn btn-cyber-outline">Open PC Builder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

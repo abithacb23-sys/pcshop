@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gamer Panel | Overclock PC Shop{% endblock %}
+
+{% block content %}
+<section class="container py-5 mt-4">
+    <!-- Panel Header -->
+    <div class="row mb-5">
+        <div class="col text-center text-md-start">
+            <h1 class="text-uppercase">Gamer Command Panel</h1>
+            <p class="text-muted mb-0">Track custom builds, review diagnostic orders, and customize your overclock profile.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Left: User Profile gamer card -->
+        <div class="col-lg-4">
+            <div class="glass-panel text-center p-4">
+                <!-- Avatar with glowing ring -->
+                <div class="d-inline-block position-relative mb-4">
+                    <div style="width: 110px; height: 110px; border-radius: 50%; padding: 4px; background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple)); box-shadow: 0 0 15px rgba(0, 207, 255, 0.4);">
+                        <div class="bg-dark border border-3 border-dark rounded-circle w-100 h-100 d-flex align-items-center justify-content-center text-white fs-1" style="overflow:hidden;">
+                            <i class="bi bi-person-workspace text-info"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="text-uppercase text-white mb-2">OPERATOR_NIGHTCITY</h4>
+                <div class="mb-4">
+                    <span class="order-status-badge" style="background: rgba(123,47,247,0.15); color: {{ tier_color }}; border: 1px solid {{ tier_color }}; box-shadow: 0 0 10px {{ tier_color }}33;">
+                        {{ gamer_tier }}
+                    </span>
+                </div>
+
+                <!-- Specs stats indicators -->
+                <div class="text-start bg-darker p-3 rounded border border-secondary mb-4" style="font-size: 13px;">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Rig Assembly Efficiency:</span>
+                            <span class="text-info fw-bold">98.4%</span>
+                        </div>
+                        <div class="progress" style="height: 6px; background-color:#1c1c28;">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 98.4%;" aria-valuenow="98" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Voltage Calibration Score:</span>
+                            <span class="text-primary fw-bold">92.1%</span>
+                        </div>
+                        <div class="progress" style="height: 6px; background-color:#1c1c28;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 92.1%;" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Gamer XP (Orders placed):</span>
+                            <span class="text-warning fw-bold">{{ order_count }}/5 Builds</span>
+                        </div>
+                        <div class="progress" style="height: 6px; background-color:#1c1c28;">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: {% if order_count >= 5 %}100{% else %}{% widthratio order_count 5 100 %}{% endif %}%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{% url 'pc_builder' %}" class="btn btn-sm btn-cyber w-100 py-2">
+                    <i class="bi bi-plus-circle me-1"></i>STAG NEW CUSTOM RIG
+                </a>
+            </div>
+        </div>
+
+        <!-- Right: Orders Tracking List -->
+        <div class="col-lg-8">
+            <div class="glass-panel p-4">
+                <h5 class="text-uppercase mb-4 text-center text-md-start" style="color: var(--neon-blue); font-size:16px;">
+                    <i class="bi bi-clock-history me-2"></i>Active Logs (Order History)
+                </h5>
+
+                {% if orders %}
+                <div class="table-responsive">
+                    <table class="table order-history-table text-white mb-0" style="background:transparent;">
+                        <thead>
+                            <tr>
+                                <th>Build Ref</th>
+                                <th>Timestamp</th>
+                                <th>Total cost</th>
+                                <th>Assembly status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>
+                                    <strong class="text-info">#{{ order.id|stringformat:"06d" }}</strong>
+                                </td>
+                                <td class="text-muted small">
+                                    {{ order.created_at|date:"d-m-Y @ H:i" }}
+                                </td>
+                                <td class="fw-bold" style="font-family: var(--font-heading);">
+                                    ₹{{ order.total_price|floatformat:2 }}
+                                </td>
+                                <td>
+                                    {% if order.status == 'Pending' %}
+                                        <span class="order-status-badge status-pending">Pending</span>
+                                    {% elif order.status == 'Processing' %}
+                                        <span class="order-status-badge status-processing">Processing</span>
+                                    {% elif order.status == 'Shipped' %}
+                                        <span class="order-status-badge status-shipped">Shipped</span>
+                                    {% elif order.status == 'Completed' %}
+                                        <span class="order-status-badge status-completed">Completed</span>
+                                    {% else %}
+                                        <span class="order-status-badge bg-secondary text-white">Cancelled</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <!-- No Orders -->
+                <div class="text-center py-5">
+                    <i class="bi bi-journal-x fs-2 text-muted mb-3 d-block"></i>
+                    <h5 class="text-uppercase text-danger mb-2">No deployments registered</h5>
+                    <p class="text-muted small mb-4">You have not completed any checkouts or orders using this session yet.</p>
+                    <a href="{% url 'catalog' %}" class="btn btn-sm btn-cyber-outline">Marketplace Catalog</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

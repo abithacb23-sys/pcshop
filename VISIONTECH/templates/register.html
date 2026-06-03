@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Register | Overclock PC Shop{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card border-0 shadow-lg bg-dark text-white">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h1 class="h3 mb-2">Create your operator profile</h1>
+                        <p class="text-muted">Register for exclusive builder access, order tracking, and support ticket management.</p>
+                    </div>
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control bg-secondary text-white border-secondary" id="username" name="username" placeholder="Enter username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" class="form-control bg-secondary text-white border-secondary" id="email" name="email" placeholder="you@example.com" required>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control bg-secondary text-white border-secondary" id="password" name="password" placeholder="Enter password" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="confirm_password" class="form-label">Confirm password</label>
+                                <input type="password" class="form-control bg-secondary text-white border-secondary" id="confirm_password" name="confirm_password" placeholder="Confirm password" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 mt-3">
+                            <label for="shipping_address" class="form-label">Shipping address</label>
+                            <input type="text" class="form-control bg-secondary text-white border-secondary" id="shipping_address" name="shipping_address" placeholder="Street address or city block">
+                        </div>
+                        <div class="mb-4">
+                            <label for="phone" class="form-label">Phone number</label>
+                            <input type="tel" class="form-control bg-secondary text-white border-secondary" id="phone" name="phone" placeholder="Optional contact number">
+                        </div>
+                        <button type="submit" class="btn btn-cyber w-100 py-3">Register account</button>
+                    </form>
+
+                    <div class="text-center mt-4 text-muted">
+                        Already in the system? <a href="{% url 'login_view' %}" class="text-info text-decoration-none">Login here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

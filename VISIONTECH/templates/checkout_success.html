@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Transaction Success | Overclock PC Shop{% endblock %}
+
+{% block content %}
+<section class="container py-5 mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="glass-panel text-center py-5 px-4 mb-4" style="border-color: var(--neon-green); box-shadow: 0 0 25px rgba(57, 255, 20, 0.15);">
+                <!-- Animated Success Icon -->
+                <div class="display-1 text-success mb-4" style="text-shadow: 0 0 20px rgba(57, 255, 20, 0.4);">
+                    <i class="bi bi-shield-fill-check"></i>
+                </div>
+                
+                <h1 class="text-uppercase text-white mb-2">TRANSACTION SUCCESSFUL</h1>
+                <p class="text-success text-uppercase small mb-4" style="font-family: var(--font-heading); font-weight:600; letter-spacing: 2px;">
+                    Order Code Registered: #{{ order.id|stringformat:"06d" }}
+                </p>
+                
+                <p class="text-muted mb-4 px-lg-5" style="font-size:15px;">
+                    Your transaction has been authorized. Silicon components have been reserved and routed to assembly diagnostic testing. You will receive invoice logs in your digital mail interface.
+                </p>
+
+                <!-- Order Receipt Details -->
+                <div class="text-start bg-darker p-4 border border-secondary rounded mb-4" style="font-size:14px;">
+                    <h5 class="text-uppercase text-info mb-3 pb-2 border-bottom border-secondary" style="font-size:14px; font-family:var(--font-heading);">
+                        Configuration Receipt
+                    </h5>
+                    
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Shipped to:</div>
+                        <div class="col-sm-8 text-white fw-bold">{{ order.full_name }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Destination:</div>
+                        <div class="col-sm-8 text-white">{{ order.address }}, {{ order.city }} - {{ order.zip_code }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Invoice Contact:</div>
+                        <div class="col-sm-8 text-white">{{ order.email }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 text-muted">Total Paid:</div>
+                        <div class="col-sm-8 text-info fw-bold" style="font-family: var(--font-heading); font-size:16px;">
+                            ₹{{ order.total_price|floatformat:2 }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'dashboard' %}" class="btn btn-cyber">
+                        <i class="bi bi-person-fill-gear me-2"></i>Track Order
+                    </a>
+                    <a href="{% url 'catalog' %}" class="btn btn-cyber-outline">
+                        Back to Shop
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

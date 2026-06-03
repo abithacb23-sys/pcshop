@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Panel | Overclock PC Shop{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+        <div>
+            <h2>Admin Panel</h2>
+            <p class="text-muted mb-0">View brands, products, and back-end tools for store management.</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <a href="{% url 'brand_create' %}" class="btn btn-cyber btn-sm">Add Brand</a>
+            <a href="{% url 'product_create' %}" class="btn btn-cyber btn-sm">Add Product</a>
+            <a href="{% url 'staff_dashboard' %}" class="btn btn-outline-info btn-sm">Dashboard</a>
+            <a href="{% url 'manage_users' %}" class="btn btn-outline-warning btn-sm">Users</a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="glass-panel p-3">
+                <h5 class="mb-3">Brands</h5>
+                <ul class="list-group">
+                    {% for b in brands %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-3">
+                            {% if b.logo_url %}
+                                <img src="{{ b.logo_url }}" class="brand-icon" alt="{{ b.name }}">
+                            {% else %}
+                                <img src="/static/images/brand-placeholder.png" class="brand-icon" alt="{{ b.name }}">
+                            {% endif %}
+                            <div>
+                                <div class="fw-bold">{{ b.name }}</div>
+                                <div class="text-muted small">{{ b.website }}</div>
+                            </div>
+                        </div>
+                        <div>
+                            <a href="{% url 'brand_edit' b.pk %}" class="btn btn-sm btn-outline-info me-2">Edit</a>
+                            <a href="{% url 'brand_delete' b.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item">No brands yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="glass-panel p-3">
+                <h5 class="mb-3">Products (preview)</h5>
+                <ul class="list-group">
+                    {% for p in products %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="fw-bold">{{ p.name }}</div>
+                            <div class="text-muted small">{{ p.category.name }} — {% if p.brand %}{{ p.brand.name }}{% else %}No Brand{% endif %}</div>
+                        </div>
+                        <div>
+                            <a href="{% url 'product_detail' p.slug %}" class="btn btn-sm btn-outline-secondary">View</a>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item">No products.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

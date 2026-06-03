@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} | Overclock PC Shop{% endblock %}
+
+{% block content %}
+<section class="container py-5 mt-4">
+    <!-- Breadcrumb -->
+    <div class="row mb-4">
+        <div class="col">
+            <nav aria-label="breadcrumb" style="font-size: 13px;">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'catalog' %}">Catalog</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'catalog' %}?category={{ product.category.slug }}">{{ product.category.name }}</a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">{{ product.name }}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Product Intro Row -->
+    <div class="row g-5">
+        <!-- Image Panel -->
+        <div class="col-lg-6">
+            <div class="glass-panel p-2 position-relative" style="overflow:hidden; border-radius: 20px;">
+                <div class="product-image-container" style="height: 480px; border-radius:16px;">
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 100%; height:100%; object-fit: cover;">
+                </div>
+                <!-- Neon overlay accent -->
+                <div class="position-absolute" style="top: 20px; right: 20px; border-radius: 6px; padding: 4px 12px; background: rgba(123, 47, 247, 0.2); border: 1px solid var(--neon-purple); color: var(--neon-purple); font-family: var(--font-heading); font-size:12px; box-shadow: 0 0 10px rgba(123,47,247,0.4)">
+                    AUTHENTIC OVERCLOCK UNIT
+                </div>
+            </div>
+        </div>
+
+        <!-- Purchase & Customize Panel -->
+        <div class="col-lg-6">
+            <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+                <a href="{% url 'catalog' %}?category={{ product.category.slug }}" class="badge bg-dark text-info text-decoration-none border border-info px-3 py-2" style="font-family: var(--font-heading);">
+                    {{ product.category.name }}
+                </a>
+                {% if product.brand %}
+                    <a href="{% url 'catalog' %}?brand={{ product.brand.slug }}" class="badge bg-secondary text-info text-decoration-none border border-info px-3 py-2" style="font-family: var(--font-heading);">
+                        {{ product.brand.name }}
+                    </a>
+                {% endif %}
+                {% if product.stock > 0 %}
+                    <span class="badge bg-success px-3 py-2 border border-success" style="font-family: var(--font-heading); font-size:11px;">READY TO DEPLOY</span>
+                {% else %}
+                    <span class="badge bg-danger px-3 py-2 border border-danger" style="font-family: var(--font-heading); font-size:11px;">OUT OF STOCK</span>
+                {% endif %}
+            </div>
+            
+            <h1 class="text-uppercase mb-3" style="font-size:38px; line-height: 1.2;">{{ product.name }}</h1>
+            
+            <!-- Description -->
+            <p class="text-muted mb-4">{{ product.description }}</p>
+
+            <!-- Specs pills -->
+            <div class="specs-short mb-4">
+                {% if product.socket %}
+                    <span class="spec-pill">Socket: {{ product.socket }}</span>
+                {% endif %}
+                {% if product.ram_type %}
+                    <span class="spec-pill">RAM Type: {{ product.ram_type }}</span>
+                {% endif %}
+                {% if product.form_factor %}
+                    <span class="spec-pill">Form Factor: {{ product.form_factor }}</span>
+                {% endif %}
+                {% if product.wattage %}
+                    <span class="spec-pill">Power Draw: {{ product.wattage }}W</span>
+                {% endif %}
+            </div>
+
+            <!-- Customizable Specifications Panel -->
+            <div class="glass-panel p-4 mb-4">
+                <h5 class="text-uppercase mb-3" style="color: var(--neon-blue); font-size:14px; letter-spacing:1px;">
+                    <i class="bi bi-sliders me-2"></i>Custom Tuning Option
+                </h5>
+                
+                <!-- Custom Overclock Profile Selection -->
+                <div class="mb-4">
+                    <div class="form-check form-switch p-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label class="form-check-label text-white small" for="overclock-tuning" style="cursor: pointer;">
+                                <strong class="d-block">Extreme Voltage Tuning Profile (+ ₹4,999)</strong>
+                                <span class="text-muted text-xs">Calibrates thermal clocking curves and optimizes power draw bounds.</span>
+                            </label>
+                            <input class="form-check-input ms-3 text-info" type="checkbox" id="overclock-tuning" role="switch" style="cursor: pointer; transform: scale(1.3);">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RGB Lighting Aura Theme Select -->
+                <div>
+                    <label class="form-label text-muted small text-uppercase mb-2">RGB Color Protocol</label>
+                    <div class="row g-2">
+                        <div class="col-6 col-sm-3">
+                            <input type="radio" class="btn-check" name="rgb_theme" id="rgb-default" value="Default RGB" checked>
+                            <label class="btn btn-sm btn-outline-secondary w-100 text-white border-secondary py-2" for="rgb-default" style="font-size: 11px;">Default RGB</label>
+                        </div>
+                        <div class="col-6 col-sm-3">
+                            <input type="radio" class="btn-check" name="rgb_theme" id="rgb-cyan" value="Cyan Neon">
+                            <label class="btn btn-sm btn-outline-info w-100 py-2" for="rgb-cyan" style="font-size: 11px; color:var(--neon-blue); border-color:var(--neon-blue);">Cyan Neon</label>
+                        </div>
+                        <div class="col-6 col-sm-3">
+                            <input type="radio" class="btn-check" name="rgb_theme" id="rgb-pink" value="Cyber Pink">
+                            <label class="btn btn-sm btn-outline-danger w-100 py-2" for="rgb-pink" style="font-size: 11px; color:var(--neon-pink); border-color:var(--neon-pink);">Cyber Pink</label>
+                        </div>
+                        <div class="col-6 col-sm-3">
+                            <input type="radio" class="btn-check" name="rgb_theme" id="rgb-violet" value="Electric Violet">
+                            <label class="btn btn-sm btn-outline-primary w-100 py-2" for="rgb-violet" style="font-size: 11px; color:var(--neon-purple); border-color:var(--neon-purple);">Violet</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price and Add to Cart Section -->
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <div class="text-muted small text-uppercase">Total Cost</div>
+                    <div class="price-tag fs-1 m-0" id="live-product-price">₹{{ product.price|floatformat:2 }}</div>
+                </div>
+
+                <!-- Quantity -->
+                <div style="width: 130px;">
+                    <label class="form-label text-muted small text-uppercase mb-1">Quantity</label>
+                    <div class="input-group">
+                        <button class="btn btn-outline-secondary text-white border-secondary" type="button" onclick="adjustQty(-1)">-</button>
+                        <input type="text" class="form-control bg-dark text-white border-secondary text-center" id="product-qty" value="1" readonly>
+                        <button class="btn btn-outline-secondary text-white border-secondary" type="button" onclick="adjustQty(1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-sm-8">
+                    <a href="{% url 'cart_add' product.id %}" id="add-to-cart-link" class="btn btn-cyber w-100 py-3 text-center">
+                        <i class="bi bi-cart3 me-2"></i>ADD TO CORES
+                    </a>
+                </div>
+                <div class="col-sm-4">
+                    <a href="{% url 'catalog' %}" class="btn btn-cyber-outline w-100 py-3 text-center">
+                        BACK
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Specs & Reviews Table -->
+    <div class="row mt-5 g-5">
+        <div class="col-lg-6">
+            <h3 class="text-uppercase mb-4" style="color: var(--neon-blue);">Diagnostics Sheet</h3>
+            <div class="glass-panel p-4">
+                <table class="specs-table">
+                    <tbody>
+                        <tr>
+                            <td>Unit Serial</td>
+                            <td>OC-{{ product.id|stringformat:"05d" }}</td>
+                        </tr>
+                        {% for key, val in product.specs.items %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            <td>{{ val }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-muted">No specifications listed.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <h3 class="text-uppercase mb-4" style="color: var(--neon-purple);">User Logs (Reviews)</h3>
+            
+            <div class="glass-panel-purple p-4 mb-3">
+                <div class="d-flex justify-content-between mb-2">
+                    <strong style="color: var(--neon-blue);">Elite_Gamer99</strong>
+                    <span class="text-warning"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></span>
+                </div>
+                <p class="text-muted small mb-0">Extreme cooling capabilities and voltage stability. Delivered in perfect shock-molded casing. Recommend the voltage tuning!</p>
+            </div>
+            
+            <div class="glass-panel-purple p-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <strong style="color: var(--neon-purple);">VoltSmasher</strong>
+                    <span class="text-warning"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i></span>
+                </div>
+                <p class="text-muted small mb-0">Runs freezing cold. Checked power consumption and it matched specifications perfectly. Worth every rupee.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    <div class="row mt-5">
+        <div class="col text-center text-md-start mb-4">
+            <h3 class="text-uppercase">Matching Components</h3>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        {% for rel in related_products %}
+        <div class="col-md-4">
+            <div class="product-card">
+                <div class="product-image-container">
+                    <span class="card-badge-neon">{{ rel.category.name }}</span>
+                    <img src="{{ rel.image_url }}" alt="{{ rel.name }}">
+                </div>
+                <div class="product-info">
+                    <h4 class="product-title" title="{{ rel.name }}">{{ rel.name }}</h4>
+                    <div class="price-tag">₹{{ rel.price|floatformat:2 }}</div>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'product_detail' rel.slug %}" class="btn btn-sm btn-cyber-outline flex-grow-1 text-center">View</a>
+                        <a href="{% url 'cart_add' rel.id %}" class="btn btn-sm btn-cyber flex-grow-1 text-center">Buy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted">No related parts available.</div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const qtyInput = document.getElementById('product-qty');
+    const overclockCheckbox = document.getElementById('overclock-tuning');
+    const rgbRadios = document.getElementsByName('rgb_theme');
+    const baseLink = "{% url 'cart_add' product.id %}";
+
+    function adjustQty(amount) {
+        let current = parseInt(qtyInput.value);
+        current += amount;
+        if (current < 1) current = 1;
+        qtyInput.value = current;
+        updateCartUrl();
+    }
+
+    function updateCartUrl() {
+        let qty = qtyInput.value;
+        let oc = overclockCheckbox ? overclockCheckbox.checked : false;
+        let rgb = 'Default';
+        rgbRadios.forEach(radio => {
+            if (radio.checked) rgb = radio.value;
+        });
+        
+        let link = `${baseLink}?quantity=${qty}&overclock=${oc}&rgb_color=${encodeURIComponent(rgb)}`;
+        document.getElementById('add-to-cart-link').href = link;
+        
+        // Update price display
+        let basePrice = parseFloat("{{ product.price }}");
+        let addonPrice = oc ? 4999 : 0;
+        let totalPrice = (basePrice + addonPrice) * qty;
+        document.getElementById('live-product-price').textContent = '₹' + totalPrice.toLocaleString('en-IN', {minimumFractionDigits: 2});
+    }
+
+    if (overclockCheckbox) {
+        overclockCheckbox.addEventListener('change', updateCartUrl);
+    }
+    rgbRadios.forEach(radio => {
+        radio.addEventListener('change', updateCartUrl);
+    });
+
+    // Run initial URL update
+    updateCartUrl();
+</script>
+{% endblock %}

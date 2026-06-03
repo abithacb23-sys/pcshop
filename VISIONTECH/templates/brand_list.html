@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Brands | Overclock PC Shop{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <div class="row mb-5">
+        <div class="col text-center">
+            <h2 class="text-uppercase">Available Brands</h2>
+            {% if brand_fallback %}
+            <p class="text-muted">No official brand records were found, so we are showing brands derived from product listings.</p>
+            {% else %}
+            <p class="text-muted">Browse all brands and click any brand to view products from that manufacturer.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row g-3">
+        {% for brand in brands %}
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'catalog' %}?brand={{ brand.slug }}" class="text-decoration-none">
+                <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="text-white mb-2">{{ brand.name }}</h5>
+                        {% if brand.website %}
+                        <p class="text-muted small mb-2">{{ brand.website }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex align-items-center gap-3 mt-3">
+                        {% if brand.logo_url %}
+                            <img src="{{ brand.logo_url }}" alt="{{ brand.name }}" class="brand-icon">
+                        {% else %}
+                            <span class="badge bg-secondary text-white">No logo</span>
+                        {% endif %}
+                        <span class="badge bg-info text-dark">View products</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted">No brands available yet.</div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

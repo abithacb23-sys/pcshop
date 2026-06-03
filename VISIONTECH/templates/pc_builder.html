@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Custom Rig Configurator | Overclock PC Shop{% endblock %}
+
+{% block content %}
+<section class="container py-5 mt-4">
+    <!-- Title Header -->
+    <div class="row mb-5">
+        <div class="col text-center">
+            <h1 class="text-uppercase" style="font-size: 36px; letter-spacing: 2px;">Custom Rig Builder</h1>
+            <p class="text-muted">Select components, run automated compatibility checks, and compile your dream setup.</p>
+            <div style="height: 3px; width: 100px; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); margin: 15px auto 0 auto;"></div>
+        </div>
+    </div>
+
+    <!-- Builder Workplace -->
+    <div class="builder-steps-container">
+        <!-- Left: Components List -->
+        <div class="builder-steps-left">
+            {% for cat in categories %}
+            <div class="builder-step-row" id="builder-row-{{ cat.slug }}">
+                <div class="builder-step-info">
+                    <div class="builder-step-icon">
+                        <i class="bi {{ cat.icon }}"></i>
+                    </div>
+                    <div class="builder-part-detail">
+                        <span class="builder-part-category">{{ cat.name }}</span>
+                        <!-- Default placeholder text -->
+                        <span class="builder-part-name placeholder-part">Select {{ cat.name|slice:":-1"|upper }}...</span>
+                    </div>
+                </div>
+
+                <div class="builder-step-actions">
+                    <span class="builder-step-price">₹0</span>
+                    <button class="btn btn-sm btn-cyber-outline select-part-btn" data-bs-toggle="modal" data-bs-target="#modal-{{ cat.slug }}">
+                        Select
+                    </button>
+                    <button class="btn btn-sm btn-dark text-danger border border-danger-subtle remove-part-btn" onclick="removeBuilderPart('{{ cat.slug }}')" style="padding: 6px 10px;">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Right: Diagnostic Panel / Summary Box -->
+        <div class="builder-steps-right">
+            <!-- Diagnostics Box -->
+            <div class="glass-panel summary-box p-4">
+                <h5 class="text-uppercase mb-4 text-center" style="color: var(--neon-blue); font-size:16px;">
+                    <i class="bi bi-cpu-fill me-2"></i>Diagnostics
+                </h5>
+
+                <!-- Status Header -->
+                <div class="d-flex align-items-center justify-content-center mb-4 py-2 px-3 border border-secondary rounded bg-darker">
+                    <i id="builder-compat-icon" class="bi bi-gear-wide-connected text-muted me-2"></i>
+                    <strong id="builder-compat-status" style="font-size: 11px; letter-spacing:1px; color:#a0a0ba;">NO PARTS SELECTED</strong>
+                </div>
+
+                <!-- Diagnostics warnings list -->
+                <div id="compatibility-alerts-box" class="mb-4">
+                    <div class="text-muted text-center py-3" style="font-size: 13px;">
+                        Start selecting components to run compatibility checks.
+                    </div>
+                </div>
+
+                <!-- Stats summary -->
+                <div class="mb-4">
+                    <div class="summary-stat-row">
+                        <span class="summary-stat-label">Power consumption:</span>
+                        <span class="summary-stat-value neon-value" id="summary-total-wattage">0 W</span>
+                    </div>
+                    <div class="summary-stat-row">
+                        <span class="summary-stat-label">Estimated cost:</span>
+                        <span class="summary-stat-value purple-value" id="summary-total-price">₹0</span>
+                    </div>
+                </div>
+
+                <!-- Cart submit action -->
+                <button class="btn btn-cyber w-100 py-3 mt-2" onclick="addRigToCart()">
+                    <i class="bi bi-cart3 me-2"></i>DEPLOY RIG TO CART
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modals for Part Selection -->
+{% for cat_slug, parts_list in builder_data.items %}
+<div class="modal fade" id="modal-{{ cat_slug }}" tabindex="-1" aria-labelledby="modalLabel-{{ cat_slug }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content modal-content-cyber">
+            <div class="modal-header modal-header-cyber">
+                <h5 class="modal-title text-uppercase" id="modalLabel-{{ cat_slug }}" style="color: var(--neon-blue); letter-spacing:1px;">
+                    Select Component: {{ cat_slug|upper }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body modal-body-cyber">
+                {% for part in parts_list %}
+                <div class="part-select-row">
+                    <div class="part-select-info">
+                        <img src="{{ part.image_url }}" alt="{{ part.name }}" class="part-select-img">
+                        <div class="part-select-meta">
+                            <h6 class="text-white text-uppercase">{{ part.name }}</h6>
+                            <p class="text-muted small">
+                                {% if part.socket %}Socket: <strong>{{ part.socket }}</strong> | {% endif %}
+                                {% if part.ram_type %}Memory Type: <strong>{{ part.ram_type }}</strong> | {% endif %}
+                                {% if part.form_factor %}Form Factor: <strong>{{ part.form_factor }}</strong> | {% endif %}
+                                {% if part.wattage %}Estimated Power: <strong>{{ part.wattage }}W</strong>{% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="part-select-action">
+                        <span class="text-info fw-bold" style="font-family: var(--font-heading);">₹{{ part.price|floatformat:2 }}</span>
+                        <!-- Trigger parts selection Javascript callback -->
+                        <button class="btn btn-sm btn-cyber" 
+                                onclick="selectBuilderPart('{{ cat_slug }}', '{{ part.id }}', '{{ part.name }}', '{{ part.price }}', '{{ part.wattage }}', '{{ part.socket|default:'' }}', '{{ part.ram_type|default:'' }}', '{{ part.form_factor|default:'' }}', '{{ part.image_url }}')">
+                            Select
+                        </button>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted py-4">No products matching category found. Run seeding protocols.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Feedback | Overclock PC Shop{% endblock %}
+
+{% block extra_css %}
+<style>
+    .feedback-page {
+        min-height: calc(100vh - 120px);
+        background: radial-gradient(circle at top left, rgba(0, 255, 227, 0.16), transparent 30%),
+                    radial-gradient(circle at bottom right, rgba(123, 47, 247, 0.18), transparent 35%),
+                    #050714;
+    }
+    .feedback-card {
+        background: rgba(8, 12, 34, 0.95);
+        border: 1px solid rgba(56, 189, 248, 0.16);
+        box-shadow: 0 0 40px rgba(14, 116, 144, 0.08);
+    }
+    .feedback-card .form-control,
+    .feedback-card .form-select {
+        background: rgba(255,255,255,0.05);
+        border-color: rgba(94, 204, 255, 0.18);
+        color: #f8f9fa;
+    }
+    .feedback-card .form-control:focus,
+    .feedback-card .form-select:focus {
+        border-color: #0ea5e9;
+        box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.18);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="feedback-page d-flex align-items-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="feedback-card card p-4">
+                    <div class="text-center mb-4">
+                        <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-info text-dark" style="width:70px; height:70px;">
+                            <i class="bi bi-chat-left-text fs-2"></i>
+                        </span>
+                        <h1 class="h3 mt-3 text-white">Share Your Feedback</h1>
+                        <p class="text-muted">Tell us what you liked, what we can improve, or how your experience was.</p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="subject" class="form-label text-white">Subject</label>
+                            <input type="text" id="subject" name="subject" class="form-control form-control-lg" placeholder="e.g. Great product selection" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label text-white">Feedback</label>
+                            <textarea id="message" name="message" rows="6" class="form-control" placeholder="Write your feedback here..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-cyber btn-lg w-100">Send Feedback</button>
+                    </form>
+
+                    <div class="text-center mt-4 text-muted">
+                        We read every message and use it to improve the store.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -618,7 +618,7 @@ def create_ticket(request):
             
     return redirect('dashboard')
 
-@login_required
+
 def feedback_view(request):
     if request.method == 'POST':
         subject = request.POST.get('subject', '').strip()
